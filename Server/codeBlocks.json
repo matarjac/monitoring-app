@@ -1,5 +1,5 @@
 [
-    {"code": "const x = 'hello world'; console.log(x);"},
-    {"code": "const arr = [1,2,3]; console.log('index 0 of arr is: ', arr[0]);"},
-    {"code": "const a = 2; const b = 3; console.log('sum of a and b is:', a+b );"}
+    {"name":"hello world", "code": "const x = 'hello world'; console.log(x);"},
+    {"name":"arrays index", "code": "const arr = [1,2,3]; console.log('index 0 of arr is: ', arr[0]);"},
+    {"name":"summing variables","code": "const a = 2; const b = 3; console.log('sum of a and b is:', a+b );"}
 ]

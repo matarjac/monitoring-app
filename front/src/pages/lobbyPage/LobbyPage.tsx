@@ -1,34 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { LobbyContainer, LobbyTitle, LobbyItemsContainer, CodeBlockCube, LobbyCodeBlockCubesContainer } from "../../styledComponents/lobbyStyledComponents";
-
-interface ICodeBlock {
-    _id: string,
-    name: string,
-    code: string
-}
+import { useSelector } from "react-redux";
+import ICodeBlock from "../../interfaces/ICodeBlock";
+import { IStore } from "../../interfaces/IStore";
 
 const Lobby: React.FC = () => {
-    const [codeBlocksList, setCodeBlocksList] = useState([]);
+    const codeBlocksData = useSelector((state: IStore) => state.codeBlocks.value);
+    const [codeBlocksList, setCodeBlocksList] = useState(codeBlocksData);
 
-    // const fetchCodeBlocks = async () => {
-    //     try {
-    //         const { data } = await axios.get('http://localhost:8000/codeBlocks');
-    //         setCodeBlocksList(data);
-    //         console.log(codeBlocksList);
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // }
     useEffect(() => {
-        axios.get('http://localhost:8000/codeBlocks')
-            .then(response => {
-                setCodeBlocksList(response.data);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-        console.log(codeBlocksList);
+        console.log('store data>>>', codeBlocksList);
     }, []);
     return (
         <LobbyContainer>
@@ -39,10 +21,9 @@ const Lobby: React.FC = () => {
             </LobbyItemsContainer>
 
             <LobbyCodeBlockCubesContainer>
-                <CodeBlockCube>CodeBlock</CodeBlockCube>
-                <CodeBlockCube>CodeBlock</CodeBlockCube>
-                <CodeBlockCube>CodeBlock</CodeBlockCube>
-                <CodeBlockCube>CodeBlock</CodeBlockCube>
+                {codeBlocksList.map((codeBlock, index) => (
+                    <CodeBlockCube key={index}>{codeBlock.name}</CodeBlockCube>
+                ))}
             </LobbyCodeBlockCubesContainer>
         </LobbyContainer>
     )
