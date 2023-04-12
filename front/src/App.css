@@ -10,4 +10,10 @@
 
 body {
   background-color: rgb(84, 83, 107);
+  font-family: "Roboto", sans-serif;
+}
+
+span {
+  font-size: 40px;
+  color: white;
 }

@@ -1,11 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
+import Lobby from './pages/lobbyPage/LobbyPage';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <span>Hello!!</span>
+      <Lobby/>
     </div>
   );
 }
