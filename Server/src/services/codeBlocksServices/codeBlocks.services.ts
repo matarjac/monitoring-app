@@ -3,7 +3,6 @@ import { ICodeBlock, CodeBlockModel } from "../../model/codeBlocksModel/codeBloc
 export const getCodeBlocks = async () => {
     try {
         const codeBlocks: ICodeBlock[] = await CodeBlockModel.find();
-        console.log(codeBlocks);
         return codeBlocks;
     }
     catch (err) {

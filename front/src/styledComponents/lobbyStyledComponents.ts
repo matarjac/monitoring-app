@@ -33,8 +33,10 @@ export const LobbyCodeBlockCubesContainer = styled.div`
 export const CodeBlockCube = styled.button`
     all:unset;
     cursor:pointer;
+    color: white;
     text-align: center;
-    background-color: #9677bd;
+    background-color: rgb(29, 38, 79);
     height: 150px;
     width: 150px;
+    border-radius: 10px;
 `

@@ -4,10 +4,12 @@ import { LobbyContainer, LobbyTitle, LobbyItemsContainer, CodeBlockCube, LobbyCo
 import { useSelector } from "react-redux";
 import ICodeBlock from "../../interfaces/ICodeBlock";
 import { IStore } from "../../interfaces/IStore";
+import { useNavigate } from "react-router-dom";
 
 const Lobby: React.FC = () => {
     const codeBlocksData = useSelector((state: IStore) => state.codeBlocks.value);
     const [codeBlocksList, setCodeBlocksList] = useState(codeBlocksData);
+    const navigation = useNavigate();
 
     useEffect(() => {
         console.log('store data>>>', codeBlocksList);
@@ -22,7 +24,7 @@ const Lobby: React.FC = () => {
 
             <LobbyCodeBlockCubesContainer>
                 {codeBlocksList.map((codeBlock, index) => (
-                    <CodeBlockCube key={index}>{codeBlock.name}</CodeBlockCube>
+                    <CodeBlockCube onClick={() => { navigation(`code-block/${codeBlock._id}`) }} key={index}>{codeBlock.name}</CodeBlockCube>
                 ))}
             </LobbyCodeBlockCubesContainer>
         </LobbyContainer>
