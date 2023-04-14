@@ -36,8 +36,9 @@ export const CodeTextArea = styled.textarea`
     font-size: 18px;
     color: transparent;
     width: 70%;
-    height:60%;
+    height:70%;
     position:absolute;
+    overflow: scroll ;
 
 `
 export const CodeTag = styled.code`
@@ -45,8 +46,20 @@ export const CodeTag = styled.code`
     font-size: 18px;
     color: black;
     width: 70%;
-    height:60%;
+    height:70%;
     line-break: pre-wrap;
-    position:absolute;
+    position:absolute; 
+    overflow: scroll ;
+`
+
+export const ViewOnlySign = styled.span`
+    font-size: 20px;
+    background-color: rgba(147, 149, 153, 0.5);
+    color: rgb(32, 38, 48);
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    padding:10px 30px;
+    border-radius: 9px;
     
 `

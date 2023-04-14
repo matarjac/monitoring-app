@@ -26,13 +26,24 @@ io.on("connection", (socket) => {
     connectCounter++;
     console.log(`Total clients connected:${connectCounter}`);
 
+
+    socket.on('socket_id', () => {
+        console.log(socket.id);
+        socket.emit('receive_socket_id', { id: socket.id });
+    });
     socket.on('users_count', () => {
-        socket.emit('users_count', { onlineUsers: connectCounter });
+        socket.emit('receive_users_count', { onlineUsers: connectCounter });
+    });
+
+    socket.on('change_code', (data, room) => {
+        socket.to(room).emit('receive_code_change', data);
+    });
+
+    socket.on('join_room', (room) => {
+        socket.join(room);
+        console.log('joined', room)
     })
 
-    socket.on('change_code', (data) => {
-        socket.broadcast.emit('receive_code_change', data);
-    })
     socket.on('disconnect', () => {
         connectCounter--;
         console.log(`Total clients connected:${connectCounter}`);
@@ -44,10 +55,3 @@ const PORT = process.env.PORT;
 server.listen(PORT, () => console.log(`started listenning on http://localhost:${PORT}`));
 
 connectToDB();
-// io.on('connection', (socket) => {
-//     console.log('a user connected');
-//     socket.on('chat message', (msg) => {
-//         console.log('message: ' + msg);
-//         io.emit('chat message', msg);
-//     });
-// });

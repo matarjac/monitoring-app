@@ -12,9 +12,17 @@ const { data } = await getAllCodeBlocks;
 export const codeBlocksSlicer = createSlice({
     name: "codeBlocks",
     initialState: {
-        value: data
+        value: data,
+        mentorID: ''
     },
-    reducers: {}
+    reducers: {
+        setMentor: (state, action) => {
+            const id = action.payload;
+            state.mentorID = id;
+            console.log(state.mentorID);
+        }
+    }
 })
 
+export const { setMentor } = codeBlocksSlicer.actions;
 export default codeBlocksSlicer.reducer;

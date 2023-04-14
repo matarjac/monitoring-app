@@ -5,5 +5,6 @@ export interface IStore{
 }
 
 export interface ICodeBlocksState{
-    value: ICodeBlock[]
+    value: ICodeBlock[],
+    mentorID: string
 }
