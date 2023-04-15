@@ -3,5 +3,4 @@ import { getAllCodeBlocks } from "../../controllers/codeBlocksControllers/codeBl
 
 const router = express.Router();
 router.get("/", getAllCodeBlocks);
-
 export default router;

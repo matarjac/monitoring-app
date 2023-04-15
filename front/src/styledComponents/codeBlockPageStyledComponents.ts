@@ -27,29 +27,34 @@ export const CodeBlockHeaderTitle = styled.span`
 `
 
 export const CodeBlockBody = styled.div`
-    padding: 40px;
+    padding: 15px;
     width: 100%;
+    height: 90%;
 `
 
 export const CodeTextArea = styled.textarea`
     all: unset;
     font-size: 18px;
     color: transparent;
-    width: 70%;
+    width: 90%;
     height:70%;
     position:absolute;
     overflow: scroll ;
-
+    font-family: "Courier New";
+    letter-spacing: translate(normal+1);
+    word-wrap: break-word; 
+    overflow-wrap: break-word;
+    padding: 1em;
 `
 export const CodeTag = styled.code`
     all: unset;
     font-size: 18px;
-    color: black;
-    width: 70%;
+    width: 90%;
     height:70%;
     line-break: pre-wrap;
     position:absolute; 
     overflow: scroll ;
+    padding:1em;
 `
 
 export const ViewOnlySign = styled.span`

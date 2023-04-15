@@ -1,31 +1,53 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { IStore } from "../../interfaces/IStore";
-import { CodeTextArea, CodeBlockContainer, CodeTag, CodeBlockHeader, CodeBlockBody, CodeBlockHeaderTitle, ViewOnlySign } from "../../styledComponents/codeBlockPageStyledComponents";
+import { updateCode } from "../../store/codeBlocksSlicer";
+import {
+    CodeTextArea,
+    CodeBlockContainer,
+    CodeTag,
+    CodeBlockHeader,
+    CodeBlockBody,
+    CodeBlockHeaderTitle,
+    ViewOnlySign
+} from "../../styledComponents/codeBlockPageStyledComponents";
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
-// import 'highlight.js/styles/default.css';
 import "highlight.js/styles/github.css";
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:8000');
+
 export const CodeBlockPage: React.FC = () => {
 
-    const { id = '' } = useParams();
+    const { codeID = '' } = useParams();
     const codeBlocksData = useSelector((state: IStore) => state.codeBlocks.value);
-    const currentCodeBlock = codeBlocksData.filter((codeBlock) => codeBlock._id === id);
+    const currentCodeBlock = codeBlocksData.filter((codeBlock) => codeBlock._id === codeID);
     const [codeBlockCode, setCodeBlockCode] = useState(currentCodeBlock[0].code);
-    const [codeBlockArr, setCodeBlockArr] = useState([codeBlockCode]);
     const [codeBlockName, setCodeBlockName] = useState(currentCodeBlock[0].name);
     const [isMentor, setIsMentor] = useState<boolean>(false);
+    const codeRef = useRef<HTMLElement>(null);
+
+    hljs.registerLanguage('javascript', javascript);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        socket.emit("join_room", id);
+        socket.emit("join_room", codeID);
         socket.emit('users_count');
+    }, []);
+
+    useEffect(() => {
+
+        //  Determine if user is Mentor or student
         socket.on('receive_users_count', (data) => {
             if (data.onlineUsers > 1) {
-                setIsMentor(false);
+                const mentorID = sessionStorage.getItem('mentorID');
+                if (mentorID) {
+                    setIsMentor(true);
+                } else {
+                    setIsMentor(false);
+                }
             } else {
                 setIsMentor(true);
                 socket.emit('socket_id');
@@ -34,24 +56,31 @@ export const CodeBlockPage: React.FC = () => {
                 })
             }
         });
-    }, []);
 
-    useEffect(() => {
         socket.on("receive_code_change", (data) => {
             setCodeBlockCode(data.code);
         })
+
     }, [socket]);
 
-    const emitChange = () => {
-        socket.emit('change_code', { code: codeBlockCode }, id)
-    };
+    useEffect(() => {
+        socket.emit('change_code', { code: codeBlockCode }, codeID)
+        // make code highlight on every change
+        if (codeRef.current) {
+            hljs.highlightElement(codeRef.current);
+        }
+        // Updates redux store with updated code
+        dispatch(updateCode({ codeID, code: codeBlockCode }));
+    }, [codeBlockCode]);
 
-    const handleTextChange = (e: any) => {
-        const newText = e.target.value;
-        const newString = newText.split("\n");
-        setCodeBlockArr(newString);
+    const handleTextChange = async (e: any) => {
         setCodeBlockCode(e.target.value);
-        emitChange();
+    }
+
+    // leave room when user leave codeBlock page
+    // (going back to lobby to choose different codeBlock)
+    window.onpopstate = () => {
+        socket.emit('leave_room', codeID);
     }
 
     return (
@@ -62,8 +91,10 @@ export const CodeBlockPage: React.FC = () => {
                     <CodeBlockHeaderTitle>JavaScript</CodeBlockHeaderTitle>
                 </CodeBlockHeader>
                 <CodeBlockBody>
-                    <CodeTag>{codeBlockCode}</CodeTag>
-                    <CodeTextArea value={codeBlockCode} readOnly={isMentor} onChange={(e) => handleTextChange(e)} />
+                    <pre>
+                        <CodeTag ref={codeRef}>{codeBlockCode}</CodeTag>
+                    </pre>
+                    <CodeTextArea value={codeBlockCode} readOnly={isMentor} spellCheck={false} onChange={(e) => handleTextChange(e)} />
                 </CodeBlockBody>
                 {isMentor && <ViewOnlySign>View only</ViewOnlySign>}
             </CodeBlockContainer>
@@ -72,13 +103,3 @@ export const CodeBlockPage: React.FC = () => {
 }
 
 export default CodeBlockPage;
-
-// const codeRef = useRef<HTMLDivElement>(null);
-// hljs.registerLanguage('javascript', javascript);
-// useEffect(() => {
-
-// if (codeRef.current) {
-//     hljs.highlightElement(codeRef.current);
-//     hljs.highlightElement(codeRef.current);
-// }
-// }, [codeBlockCode]);

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from 'axios';
 
 interface ICodeBlock {
+    _id: string,
     name: string,
     code: string
 }
@@ -16,13 +17,13 @@ export const codeBlocksSlicer = createSlice({
         mentorID: ''
     },
     reducers: {
-        setMentor: (state, action) => {
-            const id = action.payload;
-            state.mentorID = id;
-            console.log(state.mentorID);
+        updateCode: (state, action) => {
+            const { code, codeID } = action.payload;
+            const index = state.value.findIndex((obj: ICodeBlock) => obj._id === codeID);
+            state.value[index].code = code;
         }
     }
 })
 
-export const { setMentor } = codeBlocksSlicer.actions;
+export const { updateCode } = codeBlocksSlicer.actions;
 export default codeBlocksSlicer.reducer;

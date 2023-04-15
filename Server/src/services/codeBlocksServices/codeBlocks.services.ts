@@ -11,3 +11,17 @@ export const getCodeBlocks = async () => {
     }
 }
 
+export const updateCodeBlock = async (codeID: string, updatedCode: string) => {
+    try {
+        await CodeBlockModel.updateOne(
+            { _id: codeID },
+            {
+                $set: { ["code"]: updatedCode }
+            });
+        console.log('document updated successfully');
+
+    } catch (err) {
+        throw err;
+    }
+}
+

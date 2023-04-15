@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Lobby />} />
-          <Route path="/code-block/:id" element={<CodeBlockPage />} />
+          <Route path="/code-block/:codeID" element={<CodeBlockPage />} />
         </Routes>
       </BrowserRouter>
     </Provider>

@@ -1,6 +1,7 @@
 import { connectToDB } from "./connection";
 import routes from "./routes/index";
 import { Server } from 'socket.io';
+import { updateCodeBlock } from "./services/codeBlocksServices/codeBlocks.services";
 
 const express = require('express');
 const cors = require('cors');
@@ -11,7 +12,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: '*',
         methods: ["GET", "POST"],
         credentials: true
     }
@@ -22,33 +23,43 @@ app.use(bodyParser.json());
 app.use(routes);
 
 let connectCounter = 0;
+let currentCodeBlockID = '';
+let currentCode = '';
+
 io.on("connection", (socket) => {
     connectCounter++;
-    console.log(`Total clients connected:${connectCounter}`);
-
 
     socket.on('socket_id', () => {
-        console.log(socket.id);
         socket.emit('receive_socket_id', { id: socket.id });
     });
+
     socket.on('users_count', () => {
         socket.emit('receive_users_count', { onlineUsers: connectCounter });
     });
 
     socket.on('change_code', (data, room) => {
         socket.to(room).emit('receive_code_change', data);
+        currentCode = data.code;
     });
 
     socket.on('join_room', (room) => {
         socket.join(room);
-        console.log('joined', room)
+        currentCodeBlockID = room;
+    })
+
+    socket.on('leave_room', (room) => {
+
+        // update DB when user leave codeBlock page only if user is not Mentor
+        if (currentCodeBlockID && currentCode) {
+            updateCodeBlock(currentCodeBlockID, currentCode);
+            currentCode = '';
+        }
+        socket.leave(room);
     })
 
     socket.on('disconnect', () => {
         connectCounter--;
-        console.log(`Total clients connected:${connectCounter}`);
     })
-
 })
 
 const PORT = process.env.PORT;
