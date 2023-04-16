@@ -9,10 +9,11 @@ import {
 import { useSelector } from "react-redux";
 import { IStore } from "../../interfaces/IStore";
 import { useNavigate } from "react-router-dom";
+import { ICodeBlock } from "../../interfaces/ICodeBlock";
 
 const Lobby: React.FC = () => {
     const codeBlocksData = useSelector((state: IStore) => state.codeBlocks.value);
-    const [codeBlocksList, setCodeBlocksList] = useState(codeBlocksData);
+    const [codeBlocksList, setCodeBlocksList] = useState<ICodeBlock[]>(codeBlocksData);
     const navigation = useNavigate();
 
     return (

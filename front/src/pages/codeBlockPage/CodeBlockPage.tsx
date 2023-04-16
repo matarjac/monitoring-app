@@ -21,11 +21,11 @@ const socket = io('http://localhost:8000');
 
 export const CodeBlockPage: React.FC = () => {
 
-    const { codeID = '' } = useParams();
+    const { codeID = '' } = useParams<string>();
     const codeBlocksData = useSelector((state: IStore) => state.codeBlocks.value);
     const currentCodeBlock = codeBlocksData.filter((codeBlock) => codeBlock._id === codeID);
-    const [codeBlockCode, setCodeBlockCode] = useState(currentCodeBlock[0].code);
-    const [codeBlockName, setCodeBlockName] = useState(currentCodeBlock[0].name);
+    const [codeBlockCode, setCodeBlockCode] = useState<string>(currentCodeBlock[0].code);
+    const [codeBlockName, setCodeBlockName] = useState<string>(currentCodeBlock[0].name);
     const [isMentor, setIsMentor] = useState<boolean>(false);
     const codeRef = useRef<HTMLElement>(null);
 
@@ -42,7 +42,7 @@ export const CodeBlockPage: React.FC = () => {
         //  Determine if user is Mentor or student
         socket.on('receive_users_count', (data) => {
             if (data.onlineUsers > 1) {
-                const mentorID = sessionStorage.getItem('mentorID');
+                const mentorID: string | null = sessionStorage.getItem('mentorID');
                 if (mentorID) {
                     setIsMentor(true);
                 } else {
@@ -59,7 +59,7 @@ export const CodeBlockPage: React.FC = () => {
 
         socket.on("receive_code_change", (data) => {
             setCodeBlockCode(data.code);
-        })
+        });
 
     }, [socket]);
 
@@ -69,11 +69,10 @@ export const CodeBlockPage: React.FC = () => {
             hljs.highlightElement(codeRef.current);
         }
         // Updates redux store with updated code
-        dispatch(updateCode({ codeID, code: codeBlockCode }));
     }, [codeBlockCode]);
 
     const handleTextChange = async (e: any) => {
-        const updatedCode = e.target.value;
+        const updatedCode: string = e.target.value;
         socket.emit('change_code', { code: updatedCode }, codeID)
         setCodeBlockCode(updatedCode);
     }
@@ -82,6 +81,7 @@ export const CodeBlockPage: React.FC = () => {
     // (going back to lobby to choose different codeBlock)
     window.onpopstate = () => {
         socket.emit('leave_room', codeID);
+        dispatch(updateCode({ codeID, code: codeBlockCode }));
     }
 
     return (

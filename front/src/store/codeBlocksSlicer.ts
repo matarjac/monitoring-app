@@ -13,8 +13,7 @@ const { data } = await getAllCodeBlocks;
 export const codeBlocksSlicer = createSlice({
     name: "codeBlocks",
     initialState: {
-        value: data,
-        mentorID: ''
+        value: data
     },
     reducers: {
         updateCode: (state, action) => {
