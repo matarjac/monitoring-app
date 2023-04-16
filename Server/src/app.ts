@@ -22,9 +22,9 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(routes);
 
-let connectCounter = 0;
-let currentCodeBlockID = '';
-let currentCode = '';
+let connectCounter: number = 0;
+let currentCodeBlockID: string = '';
+let currentCode: string = '';
 
 io.on("connection", (socket) => {
     connectCounter++;
@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
     socket.on('join_room', (room) => {
         socket.join(room);
         currentCodeBlockID = room;
-    })
+    });
 
     socket.on('leave_room', (room) => {
 
@@ -55,11 +55,11 @@ io.on("connection", (socket) => {
             currentCode = '';
         }
         socket.leave(room);
-    })
+    });
 
     socket.on('disconnect', () => {
         connectCounter--;
-    })
+    });
 })
 
 const PORT = process.env.PORT;
